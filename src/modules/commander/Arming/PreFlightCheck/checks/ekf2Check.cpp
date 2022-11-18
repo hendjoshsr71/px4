@@ -67,6 +67,9 @@ bool PreFlightCheck::ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &
 	int32_t arm_without_gps = 0;
 	param_get(param_find("COM_ARM_WO_GPS"), &arm_without_gps);
 
+	int32_t arm_with_bad_innovation = 0;
+	param_get(param_find("COM_ARM_BAD_INOV"), &arm_with_bad_innovation);
+
 	int32_t sys_has_gps = 1;
 	param_get(param_find("SYS_HAS_GPS"), &sys_has_gps);
 
@@ -84,10 +87,11 @@ bool PreFlightCheck::ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &
 	}
 
 	// Check if preflight check performed by estimator has failed
-	if (status.pre_flt_fail_innov_heading ||
-	    status.pre_flt_fail_innov_vel_horiz ||
-	    status.pre_flt_fail_innov_vel_vert ||
-	    status.pre_flt_fail_innov_height) {
+	if (!arm_with_bad_innovation &&
+	    (status.pre_flt_fail_innov_heading ||
+	     status.pre_flt_fail_innov_vel_horiz ||
+	     status.pre_flt_fail_innov_vel_vert ||
+	     status.pre_flt_fail_innov_height)) {
 		if (report_fail) {
 			if (status.pre_flt_fail_innov_heading) {
 				mavlink_log_critical(mavlink_log_pub, "Preflight Fail: heading estimate not stable");
@@ -134,7 +138,7 @@ bool PreFlightCheck::ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &
 	}
 
 	// check velocity innovation test ratio
-	if (status.vel_test_ratio > vel_test_ratio_limit) {
+	if (vel_test_ratio_limit > 0 && status.vel_test_ratio > vel_test_ratio_limit) {
 		if (report_fail) {
 			mavlink_log_critical(mavlink_log_pub, "Preflight Fail: Velocity estimate error");
 		}
@@ -144,7 +148,7 @@ bool PreFlightCheck::ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &
 	}
 
 	// check horizontal position innovation test ratio
-	if (status.pos_test_ratio > pos_test_ratio_limit) {
+	if (pos_test_ratio_limit > 0 && status.pos_test_ratio > pos_test_ratio_limit) {
 		if (report_fail) {
 			mavlink_log_critical(mavlink_log_pub, "Preflight Fail: Position estimate error");
 		}
@@ -154,7 +158,7 @@ bool PreFlightCheck::ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &
 	}
 
 	// check magnetometer innovation test ratio
-	if (status.mag_test_ratio > mag_test_ratio_limit) {
+	if (mag_test_ratio_limit > 0 && status.mag_test_ratio > mag_test_ratio_limit) {
 		if (report_fail) {
 			mavlink_log_critical(mavlink_log_pub, "Preflight Fail: Yaw estimate error");
 		}

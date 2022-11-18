@@ -310,6 +310,17 @@ PARAM_DEFINE_INT32(COM_DISARM_FORCE, 0);
 PARAM_DEFINE_INT32(COM_ARM_WO_GPS, 1);
 
 /**
+ * Allow arming with bad EKF innovation.
+ *
+ * The default only allows arming if EKF innovations are reasonable.
+ *
+ * @group Commander
+ * @value 0 Require reasonable innovations to arm.
+ * @value 1 Allow arming with any innovation.
+ */
+PARAM_DEFINE_INT32(COM_ARM_BAD_INOV, 0);
+
+/**
  * Arm switch is a momentary button
  *
  * 0: Arming/disarming triggers on switch transition.
@@ -610,8 +621,10 @@ PARAM_DEFINE_FLOAT(COM_ARM_ACC_MAX, 15.0f);
 /**
  * Maximum EKF position innovation test ratio that will allow arming
  *
+ * A value of 0 disables the check.
+ *
  * @group Commander
- * @min 0.1
+ * @min 0.0
  * @max 1.0
  * @decimal 2
  * @increment 0.05
@@ -621,8 +634,10 @@ PARAM_DEFINE_FLOAT(COM_ARM_EKF_POS, 0.5f);
 /**
  * Maximum EKF velocity innovation test ratio that will allow arming
  *
+ * A value of 0 disables the check.
+ *
  * @group Commander
- * @min 0.1
+ * @min 0.0
  * @max 1.0
  * @decimal 2
  * @increment 0.05
@@ -645,8 +660,10 @@ PARAM_DEFINE_FLOAT(COM_ARM_EKF_HGT, 1.0f);
 /**
  * Maximum EKF yaw innovation test ratio that will allow arming
  *
+ * A value of 0 disables the check.
+ *
  * @group Commander
- * @min 0.1
+ * @min 0.0
  * @max 1.0
  * @decimal 2
  * @increment 0.05
