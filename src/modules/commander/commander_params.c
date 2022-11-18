@@ -686,9 +686,11 @@ PARAM_DEFINE_FLOAT(COM_ARM_EKF_BIAS, 3.0f);
 /**
  * Maximum accelerometer inconsistency between IMU units that will allow arming
  *
+ * Set 0.0 to disable the check.
+ *
  * @group Commander
  * @unit m/s^2
- * @min 0.1
+ * @min 0.0
  * @max 1.0
  * @decimal 2
  * @increment 0.05
@@ -698,9 +700,11 @@ PARAM_DEFINE_FLOAT(COM_ARM_IMU_ACC, 0.7f);
 /**
  * Maximum rate gyro inconsistency between IMU units that will allow arming
  *
+ * Set 0.0 to disable the check.
+ *
  * @group Commander
  * @unit rad/s
- * @min 0.02
+ * @min 0.0
  * @max 0.3
  * @decimal 3
  * @increment 0.01
