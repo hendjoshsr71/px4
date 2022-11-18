@@ -55,7 +55,7 @@ bool PreFlightCheck::imuConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_
 
 	// Use the difference between IMU's to detect a bad calibration.
 	// If a single IMU is fitted, the value being checked will be zero so this check will always pass.
-	if (accel_test_limit > 0.0) {
+	if (accel_test_limit > 0.0f) {
 		for (unsigned i = 0; i < (sizeof(imu.accel_inconsistency_m_s_s) / sizeof(imu.accel_inconsistency_m_s_s[0])); i++) {
 			if (imu.accel_device_ids[i] != 0) {
 				if (imu.accel_device_ids[i] == imu.accel_device_id_primary) {
@@ -91,7 +91,7 @@ bool PreFlightCheck::imuConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_
 	}
 
 	// Fail if gyro difference greater than 5 deg/sec and notify if greater than 2.5 deg/sec
-	if (gyro_test_limit > 0.0) {
+	if (gyro_test_limit > 0.0f) {
 		for (unsigned i = 0; i < (sizeof(imu.gyro_inconsistency_rad_s) / sizeof(imu.gyro_inconsistency_rad_s[0])); i++) {
 			if (imu.gyro_device_ids[i] != 0) {
 				if (imu.gyro_device_ids[i] == imu.gyro_device_id_primary) {
