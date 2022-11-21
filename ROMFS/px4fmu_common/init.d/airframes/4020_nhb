@@ -95,7 +95,7 @@ param set-default UART_ESC_BAUD 2000000
 param set-default UAVCAN_ENABLE 0
 
 # EKF params
-param set-default EKF2_AID_MASK 32
+param set-default EKF2_AID_MASK 4
 param set-default EKF2_ARSP_THR 0.1000
 param set-default EKF2_BCOEF_X 102.0000
 param set-default EKF2_BCOEF_Y 102.0000
@@ -111,7 +111,7 @@ param set-default EKF2_REQ_EPH 6.0000
 param set-default EKF2_REQ_EPV 10.0000
 param set-default EKF2_REQ_PDOP 3.5000
 param set-default EKF2_REQ_SACC 1.0000
-param set-default EKF2_NOAID_NOISE 1000.0
+param set-default EKF2_NOAID_NOISE 10.0
 
 # noise filtering params
 param set-default IMU_DGYRO_CUTOFF 60.0000
