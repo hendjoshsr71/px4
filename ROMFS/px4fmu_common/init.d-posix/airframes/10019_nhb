@@ -26,6 +26,7 @@ param set-default COM_ARM_ACC_MIN 0.0000
 param set-default COM_ARM_BAD_INOV 1
 param set-default COM_ARM_IMU_ACC 0.0
 param set-default COM_ARM_IMU_GYR 0.0
+param set-default COM_ARM_MAG_ANG -1
 param set-default COM_DISARM_FORCE 1
 param set-default COM_DISARM_LAND -1.0000
 param set-default COM_DISARM_PRFLT -1.0000
@@ -126,17 +127,10 @@ param set-default MAV_1_MODE 0
 param set-default PARAM_SET 3
 param set-default PARAM_SET_CHANL 6
 
-# consider setting to default or disabling
-param set-default COM_PREARM_MODE 1
-param set-default MPC_LAND_ALT1 5.0000
-param set-default MPC_LAND_ALT2 2.0000
-param set-default COM_ARM_MAG_ANG 30
-
 # follow up for further questioning
 param set-default CAL_MAG0_ROT 10
 param set-default HTE_HT_NOISE 0.0005
 param set-default HTE_THR_RANGE 0.4000
-param set-default NAV_ACC_RAD 10.0000
 param set-default PWM_AUX_OUT 1234
 param set-default PWM_MAIN_MIN 1075
 param set-default PWM_MAIN_OUT 1234
