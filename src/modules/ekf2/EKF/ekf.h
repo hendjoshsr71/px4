@@ -399,6 +399,7 @@ private:
 	uint64_t _time_last_gps_yaw_fuse{0};	///< time the last fusion of GPS yaw measurements were performed (uSec)
 	uint64_t _time_last_gps_yaw_data{0};	///< time the last GPS yaw measurement was available (uSec)
 	uint64_t _time_last_healthy_rng_data{0};
+	uint64_t _time_last_fake_pos_cond_failed{0}; ///< time of the last failure of the fake position fusion conditions (uSec)
 	uint8_t _nb_gps_yaw_reset_available{0}; ///< remaining number of resets allowed before switching to another aiding source
 
 	Vector2f _last_known_posNE{};		///< last known local NE position vector (m)
@@ -443,6 +444,9 @@ private:
 
 	Vector3f _gps_pos_innov{};	///< GPS position innovations (m)
 	Vector3f _gps_pos_innov_var{};	///< GPS position innovation variances (m**2)
+
+	Vector3f _fake_pos_innov{};	///< Fake position innovations (m)
+	Vector3f _fake_pos_innov_var{};	///< Fake position innovation variances (m**2)
 
 	Vector3f _ev_vel_innov{};	///< external vision velocity innovations (m/sec)
 	Vector3f _ev_vel_innov_var{};	///< external vision velocity innovation variances ((m/sec)**2)
@@ -767,6 +771,12 @@ private:
 	template <size_t ...Idxs>
 	bool measurementUpdate(Vector24f &K, const SparseVector24f<Idxs...> &H, float innovation)
 	{
+		if (_params.fusion_mode & MASK_INHIBIT_ALPHA_BIAS) {
+			for (unsigned i = 0; i != 3; i++) {
+				K(10 + i) = 0.0f;			
+			}
+		}
+
 		for (unsigned i = 0; i < 3; i++) {
 			if (_accel_bias_inhibit[i]) {
 				K(13 + i) = 0.0f;

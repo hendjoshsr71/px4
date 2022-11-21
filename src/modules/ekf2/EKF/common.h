@@ -187,6 +187,7 @@ struct auxVelSample {
 #define MASK_ROTATE_EV  (1<<6)		///< set to true to if the EV observations are in a non NED reference frame and need to be rotated before being used
 #define MASK_USE_GPSYAW  (1<<7)		///< set to true to use GPS yaw data if available
 #define MASK_USE_EVVEL  (1<<8)		///< set to true to use external vision velocity data
+#define MASK_INHIBIT_ALPHA_BIAS (1<<9)	///< set to true to inhibit estimation of gyro delta angular velocity bias
 
 enum TerrainFusionMask : int32_t {
 	TerrainFuseRangeFinder = (1 << 0),
@@ -347,6 +348,9 @@ struct parameters {
 	float acc_bias_learn_gyr_lim{3.0f};	///< learning is disabled if the magnitude of the IMU angular rate vector is greater than this (rad/sec)
 	float acc_bias_learn_tc{0.5f};		///< time constant used to control the decaying envelope filters applied to the accel and gyro magnitudes (sec)
 
+	// accel bias learning control
+	float alpha_bias_lim{0.35};		///< maximum angular acceleration bias magnitude (rad/sec**2)
+
 	const unsigned reset_timeout_max{7000000};	///< maximum time we allow horizontal inertial dead reckoning before attempting to reset the states to the measurement or change _control_status if the data is unavailable (uSec)
 	const unsigned no_aid_timeout_max{1000000};	///< maximum lapsed time from last fusion of a measurement that constrains horizontal velocity drift before the EKF will determine that the sensor is no longer contributing to aiding (uSec)
 
@@ -385,6 +389,12 @@ struct parameters {
 	const unsigned EKFGSF_reset_delay{1000000};	///< Number of uSec of bad innovations on main filter in immediate post-takeoff phase before yaw is reset to EKF-GSF value
 	const float EKFGSF_yaw_err_max{0.262f}; 	///< Composite yaw 1-sigma uncertainty threshold used to check for convergence (rad)
 	const unsigned EKFGSF_reset_count_limit{3};	///< Maximum number of times the yaw can be reset to the EKF-GSF yaw estimator value
+
+	// Fake Position Fusion Parameters
+	int32_t fp_tout{2000000};
+	float fp_alim{2.0f};
+	float fp_costilt{0.906f};
+
 };
 
 struct stateSample {

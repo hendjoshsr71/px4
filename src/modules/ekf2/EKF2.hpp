@@ -514,6 +514,9 @@ private:
 		(ParamExtFloat<px4::params::EKF2_ABL_TAU>)
 		_param_ekf2_abl_tau,	///< Time constant used to inhibit IMU delta velocity bias learning (sec)
 
+		// EKF angular accel bias learning control
+		(ParamExtFloat<px4::params::EKF2_AABL_LIM>) _param_ekf2_aabl_lim,	///< Gyro bias learning limit (rad/s**2)
+
 		// Multi-rotor drag specific force fusion
 		(ParamExtFloat<px4::params::EKF2_DRAG_NOISE>)
 		_param_ekf2_drag_noise,	///< observation noise variance for drag specific force measurements (m/sec**2)**2
@@ -543,7 +546,13 @@ private:
 
 		// Used by EKF-GSF experimental yaw estimator
 		(ParamExtFloat<px4::params::EKF2_GSF_TAS>)
-		_param_ekf2_gsf_tas_default	///< default value of true airspeed assumed during fixed wing operation
+		_param_ekf2_gsf_tas_default,	///< default value of true airspeed assumed during fixed wing operation
+
+		// Fake Position Fusion
+		(ParamExtInt<px4::params::EKF2_FP_TOUT>) _param_ekf2_fp_tout,
+		(ParamExtFloat<px4::params::EKF2_FP_ALIM>) _param_ekf2_fp_alim,
+		(ParamExtFloat<px4::params::EKF2_FP_COSTILT>) _param_ekf2_fp_costilt
+
 
 	)
 };

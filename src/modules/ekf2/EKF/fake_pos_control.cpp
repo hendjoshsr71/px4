@@ -45,7 +45,20 @@ void Ekf::controlFakePosFusion()
 	const bool fake_pos_data_ready = isTimedOut(_time_last_fake_pos_fuse, (uint64_t)2e5); // Fuse fake position at a limited rate
 
 	if (fake_pos_data_ready) {
-		const bool continuing_conditions_passing = !isHorizontalAidingActive();
+		const float accel_xy_mag_2 = sq(_accel_vec_filt(0)) + sq(_accel_vec_filt(1));
+
+		//PX4_INFO("accel_xy_mag_2, R(2,2): %f, %f", (double)accel_xy_mag_2, (double)_R_to_earth(2, 2));
+
+		// check if fake position fusion checks have failed
+		if ( (accel_xy_mag_2 > (_params.fp_alim * _params.fp_alim)) || (_R_to_earth(2, 2) < _params.fp_costilt) )
+		{
+			_time_last_fake_pos_cond_failed = _time_last_imu;
+		}
+
+		const uint64_t time_since_last_fake_pos_cond_failed = _time_last_imu - _time_last_fake_pos_cond_failed;
+		const bool continuing_conditions_passing = !isHorizontalAidingActive()
+								&& (time_since_last_fake_pos_cond_failed > (uint64_t)_params.fp_tout);
+
 		const bool starting_conditions_passing = continuing_conditions_passing;
 
 		if (_using_synthetic_position) {
@@ -91,15 +104,20 @@ void Ekf::resetFakePosFusion()
 	resetHorizontalPositionToLastKnown();
 	resetHorizontalVelocityToZero();
 	_time_last_fake_pos_fuse = _time_last_imu;
+
+	//PX4_INFO("resetting fake position fusion to: %f, %f", (double)_last_known_posNE(0), (double)_last_known_posNE(1));
 }
 
 void Ekf::stopFakePosFusion()
 {
 	_using_synthetic_position = false;
+	//PX4_INFO("stopping fake position fusion");
 }
 
 void Ekf::fuseFakePosition()
 {
+	//PX4_INFO("fusing fake position now");
+
 	Vector3f fake_pos_obs_var;
 
 	if (_control_status.flags.in_air && _control_status.flags.tilt_align) {
@@ -114,12 +132,12 @@ void Ekf::fuseFakePosition()
 		fake_pos_obs_var(0) = fake_pos_obs_var(1) = sq(0.5f);
 	}
 
-	_gps_pos_innov.xy() = Vector2f(_state.pos) - _last_known_posNE;
+	_fake_pos_innov.xy() = Vector2f(_state.pos) - _last_known_posNE;
 
 	const float fake_pos_innov_gate = 3.f;
 
-	if (fuseHorizontalPosition(_gps_pos_innov, fake_pos_innov_gate, fake_pos_obs_var,
-	                           _gps_pos_innov_var, _gps_pos_test_ratio, true)) {
+	if (fuseHorizontalPosition(_fake_pos_innov, fake_pos_innov_gate, fake_pos_obs_var,
+	                           _fake_pos_innov_var, _gps_pos_test_ratio, true)) {
 		_time_last_fake_pos_fuse = _time_last_imu;
 	}
 }
