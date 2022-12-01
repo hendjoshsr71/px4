@@ -145,5 +145,6 @@ param set-default PWM_MAIN_RATE 0
 
 # SIM-SPECIFIC PARAMS
 param set-default SYS_AUTOCONFIG 1 	# reset params each boot
+param set-default COM_RC_IN_MODE 2
 
 set MIXER quad_w
