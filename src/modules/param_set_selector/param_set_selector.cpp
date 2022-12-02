@@ -194,10 +194,10 @@ void ParamSetSelector::switchSet(const ParameterSet& set)
 		case ParameterSet::ACRO_FAST:
 		{
 			// hardcoded params for ACRO_FAST
-			mpc_man_tilt_max = 60.0;
-			mpc_tiltmax_air = 60.0;
-			mpc_z_vel_max_dn = 7.0;
-			mpc_z_vel_max_up = 7.0;
+			mpc_man_tilt_max = 65.0;
+			mpc_tiltmax_air = 65.0;
+			mpc_z_vel_max_dn = 10.0;
+			mpc_z_vel_max_up = 10.0;
 			mc_airmode = 0; // typically 2
 			PX4_INFO("Updating to ACRO_FAST params.");
 			break;
@@ -205,10 +205,10 @@ void ParamSetSelector::switchSet(const ParameterSet& set)
 		case ParameterSet::ALT_FAST:
 		{
 			// hardcoded params for ALT_FAST
-			mpc_man_tilt_max = 60.0;
-			mpc_tiltmax_air = 60.0;
-			mpc_z_vel_max_dn = 7.0;
-			mpc_z_vel_max_up = 7.0;
+			mpc_man_tilt_max = 50.0;
+			mpc_tiltmax_air = 50.0;
+			mpc_z_vel_max_dn = 3.0;
+			mpc_z_vel_max_up = 3.0;
 			mc_airmode = 0;
 			PX4_INFO("Updating to ALT_FAST params.");
 			break;
