@@ -783,6 +783,26 @@ private:
 			}
 		}
 
+		// manually disabling certain states
+		K(4) = 0.0;
+		K(5) = 0.0;
+		K(7) = 0.0;
+		K(8) = 0.0;
+		K(10) = 0.0;
+		K(11) = 0.0;
+		K(12) = 0.0;
+		K(13) = 0.0;
+		K(14) = 0.0;
+		K(15) = 0.0;
+		K(16) = 0.0;
+		K(17) = 0.0;
+		K(18) = 0.0;
+		K(19) = 0.0;
+		K(20) = 0.0;
+		K(21) = 0.0;
+		K(22) = 0.0;
+		K(23) = 0.0;
+
 		// apply covariance correction via P_new = (I -K*H)*P
 		// first calculate expression for KHP
 		// then calculate P - KHP
