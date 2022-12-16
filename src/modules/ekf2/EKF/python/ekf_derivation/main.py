@@ -225,6 +225,20 @@ def gps_yaw_observation(P,state,R_to_body):
 
     return
 
+# derive equations for fusion of gravity vector from accelerometer measurement
+def gravity_observation(P,state,R_to_body,g):
+    obs_var = symbols("R_ACC_Z", real=True) # accelerometer gravity variance
+
+    # define observation - rotating vector into body frame
+    observation = R_to_body * Matrix([0,0,g])
+
+    # generate equations
+    equations = generate_observation_vector_equations(P,state,observation,obs_var,3)
+
+    gravity_code_generator = CodeGenerator("./generated/gravity_generated.cpp")
+    write_equations_to_file(equations,gravity_code_generator,3)
+    gravity_code_generator.close()
+
 # derive equations for fusion of declination
 def declination_observation(P,state,ix,iy):
     obs_var = symbols("R_DECL", real=True) # measurement noise variance
@@ -631,6 +645,8 @@ def generate_code():
     body_frame_velocity_observation(P,state,R_to_body,vx,vy,vz)
     print('Generating body frame acceleration observation code ...')
     body_frame_accel_observation(P,state,R_to_body,vx,vy,vz,wx,wy)
+    print('Generating accelerometer gravity observation code ...')
+    gravity_observation(P,state,R_to_body,g)
     print('Generating yaw estimator code ...')
     yaw_estimator()
     print('Code generation finished!')
