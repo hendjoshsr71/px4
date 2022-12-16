@@ -60,8 +60,13 @@ void Ekf::fuseGravity()
 	// gravity
 	const float g = 9.80665;
 
-	// get last accelerometer measurement (body frame)
-	const Vector3f measurement = _accel_vec_filt;
+	// get last accelerometer measurement (body frame) - check if we're moving too much to fuse this measurement
+	const float gravity_scale = _accel_vec_filt.norm() / g;
+	if (gravity_scale < 0.9f || gravity_scale > 1.1f) {
+		PX4_WARN("High acceleration maneuver detected - not fusing.");
+		return;
+	}
+	const Vector3f measurement = _accel_vec_filt / gravity_scale;
 
 	// calculate innovation -> the difference between measured and estimated angles
 	const Vector3f estimate = _R_to_earth.transpose() * Vector3f(0,0,-g);
