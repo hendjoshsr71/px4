@@ -656,24 +656,24 @@ bool Ekf::updateQuaternion(const float innovation, const float variance, const f
 	}
 
 	// manually disabling certain states
-	Kfusion(4) = 0.0;
-	Kfusion(5) = 0.0;
-	Kfusion(7) = 0.0;
-	Kfusion(8) = 0.0;
-	Kfusion(10) = 0.0;
-	Kfusion(11) = 0.0;
-	Kfusion(12) = 0.0;
-	Kfusion(13) = 0.0;
-	Kfusion(14) = 0.0;
-	Kfusion(15) = 0.0;
-	Kfusion(16) = 0.0;
-	Kfusion(17) = 0.0;
-	Kfusion(18) = 0.0;
-	Kfusion(19) = 0.0;
-	Kfusion(20) = 0.0;
-	Kfusion(21) = 0.0;
-	Kfusion(22) = 0.0;
-	Kfusion(23) = 0.0;
+	// Kfusion(4) = 0.0;
+	// Kfusion(5) = 0.0;
+	// Kfusion(7) = 0.0;
+	// Kfusion(8) = 0.0;
+	// Kfusion(10) = 0.0;
+	// Kfusion(11) = 0.0;
+	// Kfusion(12) = 0.0;
+	// Kfusion(13) = 0.0;
+	// Kfusion(14) = 0.0;
+	// Kfusion(15) = 0.0;
+	// Kfusion(16) = 0.0;
+	// Kfusion(17) = 0.0;
+	// Kfusion(18) = 0.0;
+	// Kfusion(19) = 0.0;
+	// Kfusion(20) = 0.0;
+	// Kfusion(21) = 0.0;
+	// Kfusion(22) = 0.0;
+	// Kfusion(23) = 0.0;
 
 	// innovation test ratio
 	_yaw_test_ratio = sq(innovation) / (sq(gate_sigma) * _heading_innov_var);
