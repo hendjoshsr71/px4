@@ -1055,16 +1055,14 @@ void Ekf::controlBetaFusion()
 void Ekf::controlGravityFusion()
 {
 	// constants used to determine if fusion is allowed
-	constexpr float g = 9.80665;
-	constexpr float lateral_accel_threshold = 1.0;
+	constexpr float lateral_accel_threshold = 2.0;
 	constexpr uint64_t threshold = 100000; // 100ms
 
 	// get last accelerometer measurement (body frame) - check if we're moving too much to fuse this measurement
-	const float gravity_scale = _accel_vec_filt.norm() / g;
+	const float gravity_scale = _accel_vec_filt.norm() / CONSTANTS_ONE_G;
 	if (gravity_scale > 0.9f && gravity_scale < 1.1f) {
 		// check that we don't have too much lateral acceleration
-		const float lateral_accel_norm = sq(_accel_vec_filt(0)) + sq(_accel_vec_filt(1));
-		if (lateral_accel_norm < lateral_accel_threshold) {
+		if (_accel_lpf_NE.norm() < lateral_accel_threshold) {
 			// check if we've waited long enough since the last fusion
 			if (_time_last_imu - _time_last_hor_pos_fuse > threshold) {
 				_time_last_hor_pos_fuse = _time_last_imu;
