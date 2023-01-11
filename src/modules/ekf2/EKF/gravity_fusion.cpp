@@ -107,7 +107,7 @@ void Ekf::fuseGravity()
 	const float HK32 = P(1,2)*q1 + P(2,2)*q2;
 	const float HK33 = HK29/(HK30*HK31*q1 + HK31*HK32*q2 + R_ACC_Z);
 	
-	// Observation Jacobians for Roll Axis
+	// Observation Jacobians for X Axis
 	SparseVector24f<0,1,2,3> Hfusion;
 	Hfusion.at<0>() = HK1;
 	Hfusion.at<1>() = HK2;
@@ -141,16 +141,16 @@ void Ekf::fuseGravity()
 	Kfusion(22) = HK21*(P(0,22)*q2 - P(1,22)*q3 + P(2,22)*q0 - P(3,22)*q1);
 	Kfusion(23) = HK21*(P(0,23)*q2 - P(1,23)*q3 + P(2,23)*q0 - P(3,23)*q1);
 
-	// perform fusion for roll axis
+	// perform fusion for X axis
 	const bool roll_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(0));
 
-	// Observation Jacobians update for Pitch
+	// Observation Jacobians update for Y
 	Hfusion.at<0>() = HK4;
 	Hfusion.at<1>() = -HK3;
 	Hfusion.at<2>() = HK2;
 	Hfusion.at<3>() = -HK1;
 
-	// Kalman gains update for Pitch Axis
+	// Kalman gains update for Y Axis
 	Kfusion(0) = -HK22*HK28;
 	Kfusion(1) = -HK24*HK28;
 	Kfusion(2) = -HK27*HK28;
@@ -176,16 +176,16 @@ void Ekf::fuseGravity()
 	Kfusion(22) = -HK28*(P(0,22)*q1 + P(1,22)*q0 + P(2,22)*q3 + P(3,22)*q2);
 	Kfusion(23) = -HK28*(P(0,23)*q1 + P(1,23)*q0 + P(2,23)*q3 + P(3,23)*q2);
 
-	// perform fusion for Pitch axis
+	// perform fusion for Y axis
 	const bool pitch_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(1));
 
-	// Observation Jacobians update for Yaw
+	// Observation Jacobians update for Z
 	Hfusion.at<0>() = 0;
 	Hfusion.at<1>() = HK29*q1;
 	Hfusion.at<2>() = HK29*q2;
 	Hfusion.at<3>() = 0;
 
-	// Kalman gains update for Yaw Axis
+	// Kalman gains update for Z Axis
 	Kfusion(0) = HK33*(HK23 + HK7);
 	Kfusion(1) = HK30*HK33;
 	Kfusion(2) = HK32*HK33;
@@ -211,7 +211,7 @@ void Ekf::fuseGravity()
 	Kfusion(22) = HK33*(P(1,22)*q1 + P(2,22)*q2);
 	Kfusion(23) = HK33*(P(1,23)*q1 + P(2,23)*q2);
 
-	// perform fusion for Pitch axis
+	// perform fusion for Z axis
 	const bool yaw_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(2));
 
 	if (roll_fused)
