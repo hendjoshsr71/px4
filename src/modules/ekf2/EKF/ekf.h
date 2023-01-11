@@ -131,6 +131,8 @@ public:
 	void getHaglRateInnov(float &hagl_rate_innov) const { hagl_rate_innov = _rng_consistency_check.getInnov(); }
 	void getHaglRateInnovVar(float &hagl_rate_innov_var) const { hagl_rate_innov_var = _rng_consistency_check.getInnovVar(); }
 	void getHaglRateInnovRatio(float &hagl_rate_innov_ratio) const { hagl_rate_innov_ratio = _rng_consistency_check.getSignedTestRatioLpf(); }
+	
+	void getGravityInnov(float gravity_innov[3]) const { _gravity_innov.copyTo(gravity_innov); }
 
 	// get the state vector at the delayed time horizon
 	matrix::Vector<float, 24> getStateAtFusionHorizonAsVector() const;
@@ -481,6 +483,8 @@ private:
 
 	float _hagl_innov{0.0f};		///< innovation of the last height above terrain measurement (m)
 	float _hagl_innov_var{0.0f};		///< innovation variance for the last height above terrain measurement (m**2)
+
+	Vector3f _gravity_innov{};	///< gravity vector innovation (m/sec**2)
 
 	// optical flow processing
 	Vector2f _flow_innov{};		///< flow measurement innovation (rad/sec)

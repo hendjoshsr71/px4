@@ -58,18 +58,18 @@ void Ekf::fuseGravity()
 	
 	// observation variance associated with this measurement
 	// const float R_ACC_Z = sq(_params.accelerometer_noise);
-	const float R_ACC_Z = sq(1.0); // shrug
+	const float R_ACC_Z = sq(100.0); // shrug
 
 	// use last raw accelerometer measurement (body frame)
-	const Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt;
+	const Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt - getAccelBias();
 
 	// calculate innovation -> the difference between measured and estimated angles
 	const Vector3f estimate = _R_to_earth.transpose() * Vector3f(0,0,-g);
-	const Vector3f innovation = measurement - estimate;
+	_gravity_innov = measurement - estimate;
 	
 	PX4_INFO("measurement (x,y,z): (%f, %f, %f)", (double)measurement(0), (double)measurement(1), (double)measurement(2));
 	PX4_INFO("estimate    (x,y,z): (%f, %f, %f)", (double)estimate(0), (double)estimate(1), (double)estimate(2));
-	PX4_INFO("innovation  (x,y,z): (%f, %f, %f)", (double)innovation(0), (double)innovation(1), (double)innovation(2));
+	PX4_INFO("innovation  (x,y,z): (%f, %f, %f)", (double)_gravity_innov(0), (double)_gravity_innov(1), (double)_gravity_innov(2));
 
 	// auto-generated intermediate variables
 	const float HK0 = 2*g;
@@ -142,7 +142,7 @@ void Ekf::fuseGravity()
 	Kfusion(23) = HK21*(P(0,23)*q2 - P(1,23)*q3 + P(2,23)*q0 - P(3,23)*q1);
 
 	// perform fusion for roll axis
-	const bool roll_fused = measurementUpdate(Kfusion, Hfusion, innovation(0));
+	const bool roll_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(0));
 
 	// Observation Jacobians update for Pitch
 	Hfusion.at<0>() = HK4;
@@ -177,7 +177,7 @@ void Ekf::fuseGravity()
 	Kfusion(23) = -HK28*(P(0,23)*q1 + P(1,23)*q0 + P(2,23)*q3 + P(3,23)*q2);
 
 	// perform fusion for Pitch axis
-	const bool pitch_fused = measurementUpdate(Kfusion, Hfusion, innovation(1));
+	const bool pitch_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(1));
 
 	// Observation Jacobians update for Yaw
 	Hfusion.at<0>() = 0;
@@ -212,7 +212,7 @@ void Ekf::fuseGravity()
 	Kfusion(23) = HK33*(P(1,23)*q1 + P(2,23)*q2);
 
 	// perform fusion for Pitch axis
-	const bool yaw_fused = measurementUpdate(Kfusion, Hfusion, innovation(2));
+	const bool yaw_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(2));
 
 	if (roll_fused)
 		PX4_INFO("Successfully fused ROLL measurement.");

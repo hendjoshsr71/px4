@@ -844,6 +844,7 @@ void EKF2::PublishInnovations(const hrt_abstime &timestamp)
 	_ekf.getBetaInnov(innovations.beta);
 	_ekf.getHaglInnov(innovations.hagl);
 	_ekf.getHaglRateInnov(innovations.hagl_rate);
+	_ekf.getGravityInnov(innovations.gravity);
 	// Not yet supported
 	innovations.aux_vvel = NAN;
 
