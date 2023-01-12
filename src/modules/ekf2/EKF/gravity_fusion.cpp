@@ -55,21 +55,23 @@ void Ekf::fuseGravity()
 	const float &q1 = _state.quat_nominal(1);
 	const float &q2 = _state.quat_nominal(2);
 	const float &q3 = _state.quat_nominal(3);
-	
+
 	// observation variance associated with this measurement
 	// const float R_ACC_Z = sq(_params.accelerometer_noise);
-	const float R_ACC_Z = sq(100.0); // shrug
+	const float R_ACC_Z = 1.0; // @TODO make this a parameter
 
-	// use last raw accelerometer measurement (body frame)
+	// use raw accelerometer measurement (body frame) at EKF time horizon
 	const Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt - getAccelBias();
 
 	// calculate innovation -> the difference between measured and estimated angles
 	const Vector3f estimate = _R_to_earth.transpose() * Vector3f(0,0,-g);
-	_gravity_innov = measurement - estimate;
-	
-	PX4_INFO("measurement (x,y,z): (%f, %f, %f)", (double)measurement(0), (double)measurement(1), (double)measurement(2));
-	PX4_INFO("estimate    (x,y,z): (%f, %f, %f)", (double)estimate(0), (double)estimate(1), (double)estimate(2));
-	PX4_INFO("innovation  (x,y,z): (%f, %f, %f)", (double)_gravity_innov(0), (double)_gravity_innov(1), (double)_gravity_innov(2));
+	_gravity_innov = estimate - measurement;
+
+	// Eulerf euler(_R_to_earth.transpose());
+	// PX4_INFO("Euler (phi,theta,psi): (%f, %f, %f)", (double)euler(0), (double)euler(1), (double)euler(2));
+	// PX4_INFO("measurement   (x,y,z): (%f, %f, %f)", (double)measurement(0), (double)measurement(1), (double)measurement(2));
+	// PX4_INFO("estimate      (x,y,z): (%f, %f, %f)", (double)estimate(0), (double)estimate(1), (double)estimate(2));
+	// PX4_INFO("innovation    (x,y,z): (%f, %f, %f)", (double)_gravity_innov(0), (double)_gravity_innov(1), (double)_gravity_innov(2));
 
 	// auto-generated intermediate variables
 	const float HK0 = 2*g;
@@ -142,7 +144,8 @@ void Ekf::fuseGravity()
 	Kfusion(23) = HK21*(P(0,23)*q2 - P(1,23)*q3 + P(2,23)*q0 - P(3,23)*q1);
 
 	// perform fusion for X axis
-	const bool roll_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(0));
+	if (measurementUpdate(Kfusion, Hfusion, _gravity_innov(0)))
+		PX4_DEBUG("Successfully fused X measurement.");
 
 	// Observation Jacobians update for Y
 	Hfusion.at<0>() = HK4;
@@ -177,7 +180,8 @@ void Ekf::fuseGravity()
 	Kfusion(23) = -HK28*(P(0,23)*q1 + P(1,23)*q0 + P(2,23)*q3 + P(3,23)*q2);
 
 	// perform fusion for Y axis
-	const bool pitch_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(1));
+	if (measurementUpdate(Kfusion, Hfusion, _gravity_innov(1)))
+		PX4_DEBUG("Successfully fused Y measurement.");
 
 	// Observation Jacobians update for Z
 	Hfusion.at<0>() = 0;
@@ -212,12 +216,6 @@ void Ekf::fuseGravity()
 	Kfusion(23) = HK33*(P(1,23)*q1 + P(2,23)*q2);
 
 	// perform fusion for Z axis
-	const bool yaw_fused = measurementUpdate(Kfusion, Hfusion, _gravity_innov(2));
-
-	if (roll_fused)
-		PX4_INFO("Successfully fused ROLL measurement.");
-	if (pitch_fused)
-		PX4_INFO("Successfully fused PITCH measurement.");
-	if (yaw_fused)
-		PX4_INFO("Successfully fused YAW measurement.");
+	if (measurementUpdate(Kfusion, Hfusion, _gravity_innov(2)))
+		PX4_DEBUG("Successfully fused Z measurement.");
 }
