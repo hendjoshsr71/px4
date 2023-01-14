@@ -47,13 +47,15 @@ using namespace time_literals;
 
 #include "uorb_to_msp.hpp"
 
-namespace msp_osd {
+namespace msp_osd
+{
 
-msp_name_t construct_display_message(const struct vehicle_status_s& vehicle_status,
-				     const struct vehicle_attitude_s& vehicle_attitude,
-				     const struct log_message_s& log_message,
+msp_name_t construct_display_message(const struct vehicle_status_s &vehicle_status,
+				     const struct vehicle_attitude_s &vehicle_attitude,
+				     const struct log_message_s &log_message,
 				     const int log_level,
-				     MessageDisplay& display) {
+				     MessageDisplay &display)
+{
 	// initialize result
 	msp_name_t display_message {0};
 
@@ -64,81 +66,106 @@ msp_name_t construct_display_message(const struct vehicle_status_s& vehicle_stat
 	if (vehicle_status.timestamp < (now - 1_s)) {
 		display.set(MessageDisplayType::ARMING, "???");
 		display.set(MessageDisplayType::FLIGHT_MODE, "???");
+
 	} else {
 		// display armed / disarmed
-		if (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED)
+		if (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) {
 			display.set(MessageDisplayType::ARMING, "ARM");
-		else
+
+		} else {
 			display.set(MessageDisplayType::ARMING, "DSRM");
+		}
 
 		// display flight mode
 		switch (vehicle_status.nav_state) {
 		case vehicle_status_s::NAVIGATION_STATE_MANUAL:
 			display.set(MessageDisplayType::FLIGHT_MODE, "MANUAL");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
 			display.set(MessageDisplayType::FLIGHT_MODE, "ALTCTL");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_POSCTL:
 			display.set(MessageDisplayType::FLIGHT_MODE, "POSCTL");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_MISSION");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_LOITER");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_RTL");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_LANDENGFAIL:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_LANDENGFAIL");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_UNUSED:
 			display.set(MessageDisplayType::FLIGHT_MODE, "UNUSED");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_ACRO:
 			display.set(MessageDisplayType::FLIGHT_MODE, "ACRO");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_UNUSED1:
 			display.set(MessageDisplayType::FLIGHT_MODE, "UNUSED1");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_DESCEND:
 			display.set(MessageDisplayType::FLIGHT_MODE, "DESCEND");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_TERMINATION:
 			display.set(MessageDisplayType::FLIGHT_MODE, "TERMINATION");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_OFFBOARD:
 			display.set(MessageDisplayType::FLIGHT_MODE, "OFFBOARD");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_STAB:
 			display.set(MessageDisplayType::FLIGHT_MODE, "STAB");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_UNUSED2:
 			display.set(MessageDisplayType::FLIGHT_MODE, "UNUSED2");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_TAKEOFF");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_LAND");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_FOLLOW_TARGET");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_PRECLAND");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_ORBIT:
 			display.set(MessageDisplayType::FLIGHT_MODE, "ORBIT");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF:
 			display.set(MessageDisplayType::FLIGHT_MODE, "AUTO_VTOL_TAKEOFF");
 			break;
+
 		case vehicle_status_s::NAVIGATION_STATE_MAX:
 			display.set(MessageDisplayType::FLIGHT_MODE, "MAX");
 			break;
+
 		default:
 			display.set(MessageDisplayType::FLIGHT_MODE, "???");
 		}
@@ -148,6 +175,7 @@ msp_name_t construct_display_message(const struct vehicle_status_s& vehicle_stat
 	if (log_message.severity <= log_level) {
 		display.set(MessageDisplayType::WARNING, log_message.text);
 		last_warning_stamp = now;
+
 	} else if (now - last_warning_stamp > 30_s) {
 		// clear warning after timeout
 		display.set(MessageDisplayType::WARNING, "");
@@ -157,30 +185,40 @@ msp_name_t construct_display_message(const struct vehicle_status_s& vehicle_stat
 	// update heading, if relatively recent
 	if (vehicle_attitude.timestamp < (now - 1_s)) {
 		display.set(MessageDisplayType::HEADING, "N?");
+
 	} else {
 		// convert to YAW
 		matrix::Eulerf euler_attitude(matrix::Quatf(vehicle_attitude.q));
 		const auto yaw = math::degrees(euler_attitude.psi());
 
 		// display north direction
-		if (yaw <= 22.5f)
+		if (yaw <= 22.5f) {
 			display.set(MessageDisplayType::HEADING, "N");
-		else if(yaw <= 67.5f)
+
+		} else if (yaw <= 67.5f) {
 			display.set(MessageDisplayType::HEADING, "NE");
-		else if(yaw <= 112.5f)
+
+		} else if (yaw <= 112.5f) {
 			display.set(MessageDisplayType::HEADING, "E");
-		else if(yaw <= 157.5f)
+
+		} else if (yaw <= 157.5f) {
 			display.set(MessageDisplayType::HEADING, "SE");
-		else if(yaw <= 202.5f)
+
+		} else if (yaw <= 202.5f) {
 			display.set(MessageDisplayType::HEADING, "S");
-		else if(yaw <= 247.5f)
+
+		} else if (yaw <= 247.5f) {
 			display.set(MessageDisplayType::HEADING, "SW");
-		else if(yaw <= 292.5f)
+
+		} else if (yaw <= 292.5f) {
 			display.set(MessageDisplayType::HEADING, "W");
-		else if(yaw <= 337.5f)
+
+		} else if (yaw <= 337.5f) {
 			display.set(MessageDisplayType::HEADING, "NW");
-		else if(yaw <= 360.0f)
+
+		} else if (yaw <= 360.0f) {
 			display.set(MessageDisplayType::HEADING, "N");
+		}
 	}
 
 	// update message and return
@@ -188,7 +226,8 @@ msp_name_t construct_display_message(const struct vehicle_status_s& vehicle_stat
 	return display_message;
 }
 
-msp_fc_variant_t construct_FC_VARIANT() {
+msp_fc_variant_t construct_FC_VARIANT()
+{
 	// initialize result
 	msp_fc_variant_t variant {0};
 
@@ -196,7 +235,8 @@ msp_fc_variant_t construct_FC_VARIANT() {
 	return variant;
 }
 
-msp_status_BF_t construct_STATUS(const vehicle_status_s& vehicle_status) {
+msp_status_BF_t construct_STATUS(const vehicle_status_s &vehicle_status)
+{
 
 	// initialize result
 	msp_status_BF_t status_BF = {0};
@@ -204,16 +244,21 @@ msp_status_BF_t construct_STATUS(const vehicle_status_s& vehicle_status) {
 	if (vehicle_status.arming_state == vehicle_status.ARMING_STATE_ARMED) {
 		status_BF.flight_mode_flags |= ARM_ACRO_BF;
 
-    if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_MANUAL)
+		if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_MANUAL) {
 			status_BF.flight_mode_flags |= 0;
-    else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_ACRO)
+
+		} else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_ACRO) {
 			status_BF.flight_mode_flags |= 0;
-    else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_STAB)
+
+		} else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_STAB) {
 			status_BF.flight_mode_flags |= STAB_BF;
-    else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_AUTO_RTL)
+
+		} else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_AUTO_RTL) {
 			status_BF.flight_mode_flags |= RESC_BF;
-    else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_TERMINATION)
+
+		} else if (vehicle_status.nav_state == vehicle_status.NAVIGATION_STATE_TERMINATION) {
 			status_BF.flight_mode_flags |= FS_BF;
+		}
 	}
 
 	status_BF.arming_disable_flags_count = 1;
@@ -221,7 +266,8 @@ msp_status_BF_t construct_STATUS(const vehicle_status_s& vehicle_status) {
 	return status_BF;
 }
 
-msp_analog_t construct_ANALOG(const battery_status_s& battery_status, const input_rc_s& input_rc) {
+msp_analog_t construct_ANALOG(const battery_status_s &battery_status, const input_rc_s &input_rc)
+{
 
 	// initialize result
 	msp_analog_t analog {0};
@@ -234,7 +280,8 @@ msp_analog_t construct_ANALOG(const battery_status_s& battery_status, const inpu
 	return analog;
 }
 
-msp_battery_state_t construct_BATTERY_STATE(const battery_status_s& battery_status) {
+msp_battery_state_t construct_BATTERY_STATE(const battery_status_s &battery_status)
+{
 
 	// initialize result
 	msp_battery_state_t battery_state = {0};
@@ -258,8 +305,9 @@ msp_battery_state_t construct_BATTERY_STATE(const battery_status_s& battery_stat
 	return battery_state;
 }
 
-msp_raw_gps_t construct_RAW_GPS(const struct vehicle_gps_position_s& vehicle_gps_position,
-				const struct airspeed_validated_s& airspeed_validated) {
+msp_raw_gps_t construct_RAW_GPS(const struct vehicle_gps_position_s &vehicle_gps_position,
+				const struct airspeed_validated_s &airspeed_validated)
+{
 
 	// initialize result
 	msp_raw_gps_t raw_gps {0};
@@ -294,7 +342,7 @@ msp_raw_gps_t construct_RAW_GPS(const struct vehicle_gps_position_s& vehicle_gps
 	raw_gps.numSat = vehicle_gps_position.satellites_used;
 
 	if (airspeed_validated.airspeed_sensor_measurement_valid
-	    && airspeed_validated.indicated_airspeed_m_s != NAN
+	    && !isnan(airspeed_validated.indicated_airspeed_m_s)
 	    && airspeed_validated.indicated_airspeed_m_s > 0) {
 		raw_gps.groundSpeed = airspeed_validated.indicated_airspeed_m_s * 100;
 
@@ -305,10 +353,11 @@ msp_raw_gps_t construct_RAW_GPS(const struct vehicle_gps_position_s& vehicle_gps
 	return raw_gps;
 }
 
-msp_comp_gps_t construct_COMP_GPS(const struct home_position_s& home_position,
-				  const struct estimator_status_s& estimator_status,
-				  const struct vehicle_global_position_s& vehicle_global_position,
-				  const bool heartbeat) {
+msp_comp_gps_t construct_COMP_GPS(const struct home_position_s &home_position,
+				  const struct estimator_status_s &estimator_status,
+				  const struct vehicle_global_position_s &vehicle_global_position,
+				  const bool heartbeat)
+{
 
 	// initialize result
 	msp_comp_gps_t comp_gps {0};
@@ -337,7 +386,8 @@ msp_comp_gps_t construct_COMP_GPS(const struct home_position_s& home_position,
 	return comp_gps;
 }
 
-msp_attitude_t construct_ATTITUDE(const struct vehicle_attitude_s& vehicle_attitude) {
+msp_attitude_t construct_ATTITUDE(const struct vehicle_attitude_s &vehicle_attitude)
+{
 
 	// initialize results
 	msp_attitude_t attitude {0};
@@ -351,9 +401,10 @@ msp_attitude_t construct_ATTITUDE(const struct vehicle_attitude_s& vehicle_attit
 	return attitude;
 }
 
-msp_altitude_t construct_ALTITUDE(const struct vehicle_gps_position_s& vehicle_gps_position,
-				  const struct estimator_status_s& estimator_status,
-				  const struct vehicle_local_position_s& vehicle_local_position) {
+msp_altitude_t construct_ALTITUDE(const struct vehicle_gps_position_s &vehicle_gps_position,
+				  const struct estimator_status_s &estimator_status,
+				  const struct vehicle_local_position_s &vehicle_local_position)
+{
 
 	// initialize result
 	msp_altitude_t altitude {0};
@@ -375,7 +426,8 @@ msp_altitude_t construct_ALTITUDE(const struct vehicle_gps_position_s& vehicle_g
 	return altitude;
 }
 
-msp_esc_sensor_data_dji_t construct_ESC_SENSOR_DATA() {
+msp_esc_sensor_data_dji_t construct_ESC_SENSOR_DATA()
+{
 
 	// initialize result
 	msp_esc_sensor_data_dji_t esc_sensor_data {0};
