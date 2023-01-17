@@ -1422,10 +1422,12 @@ PARAM_DEFINE_INT32(EKF2_FP_TOUT, 2000000);
 /**
  * EKF fake position lateral accelerometer maximum.
  *
- * EKF fake position filtered body-frame lateral accelerometer maximum.  Set to a very large value (e.g., 100.0) to disable check.
+ * EKF fake position filtered body-frame lateral accelerometer maximum.
+ * Set to a very large value (e.g., 100.0) to disable check.
+ * Set to 0.0 to effectively disable Fake Position Fusion
  *
  * @group EKF2
- * @min 0.5
+ * @min 0.0
  * @max 100.0
  * @unit m/s^2
  * @decimal 1
