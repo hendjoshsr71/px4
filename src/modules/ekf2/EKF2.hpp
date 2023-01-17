@@ -438,6 +438,10 @@ private:
 		(ParamExtFloat<px4::params::EKF2_RNG_K_GATE>)
 		_param_ekf2_rng_k_gate, ///< range finder kinematic consistency gate size (STD)
 
+		// gravity fusion
+		(ParamExtFloat<px4::params::EKF2_GRAV_NOISE>)
+		_param_ekf2_gravity_noise,	///< default accelerometer observation noise for gravity fusion (m/s^2)
+
 		// vision estimate fusion
 		(ParamInt<px4::params::EKF2_EV_NOISE_MD>)
 		_param_ekf2_ev_noise_md,	///< determine source of vision observation noise

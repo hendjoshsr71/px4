@@ -320,6 +320,9 @@ struct parameters {
 	int32_t flow_qual_min{1};		///< minimum acceptable quality integer from  the flow sensor
 	float flow_innov_gate{3.0f};		///< optical flow fusion innovation consistency gate size (STD)
 
+	// gravity fusion
+	float gravity_noise {5.0f};		///< observation noise for accelerometer measurements for gravity fusion (m/s^2)
+
 	// these parameters control the strictness of GPS quality checks used to determine if the GPS is
 	// good enough to set a local origin and commence aiding
 	int32_t gps_check_mask{21};		///< bitmask used to control which GPS quality checks are used

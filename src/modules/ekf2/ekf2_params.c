@@ -723,6 +723,17 @@ PARAM_DEFINE_FLOAT(EKF2_MIN_RNG, 0.1f);
 PARAM_DEFINE_INT32(EKF2_EV_NOISE_MD, 0);
 
 /**
+ * Accelerometer measurement noise for gravity based observations.
+ *
+ * @group EKF2
+ * @min 0.1
+ * @max 10.0
+ * @unit m/s^2
+ * @decimal 2
+ */
+PARAM_DEFINE_FLOAT(EKF2_GRAV_NOISE, 5.0f);
+
+/**
  * Measurement noise for vision position observations used to lower bound or replace the uncertainty included in the message
  *
  * @group EKF2

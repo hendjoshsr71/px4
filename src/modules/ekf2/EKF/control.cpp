@@ -1054,22 +1054,8 @@ void Ekf::controlBetaFusion()
 
 void Ekf::controlGravityFusion()
 {
-	// // constants used to determine if fusion is allowed
-	// constexpr float lower_threshold = 0.9f;		// normalized total acceleration lower limit
-	// constexpr float upper_threshold = 1.1f;		// normalized total acceleration upper limit
-	// constexpr float lateral_accel_threshold = 1.5f;	// absolute acceleration lateral limit
-
-	// // get last accelerometer measurement (body frame) - check if we're moving too much to fuse this measurement
-	// const float gravity_scale = _accel_vec_filt.norm() / CONSTANTS_ONE_G;
-	// // check that we don't have too much lateral acceleration
-	// const float accel_xy_mag_2 = sq(_accel_vec_filt(0)) + sq(_accel_vec_filt(1));
-	// if (gravity_scale >= lower_threshold && gravity_scale <= upper_threshold && accel_xy_mag_2 <= sq(lateral_accel_threshold)) {
-	// 	// actually fuse gravity observations
-	// 	fuseGravity();
-	// } else {
-	// 	// reset innovations (for debugging really)
-	// 	_gravity_innov(0) = _gravity_innov(1) = _gravity_innov(2) = 0.0;
-	// }
+	// note - various heuristics to restrict observations based on acceleration were tried and
+	//  found wanting
 	fuseGravity();
 }
 
