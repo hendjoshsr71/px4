@@ -56,9 +56,8 @@ void Ekf::fuseGravity()
 	const float &q2 = _state.quat_nominal(2);
 	const float &q3 = _state.quat_nominal(3);
 
-	// observation variance associated with this measurement
-	// const float R_ACC_Z = sq(_params.accelerometer_noise);
-	const float R_ACC_Z = 1.0; // @TODO make this a parameter
+	// zero-mean gaussian observation noise for acceleration
+	const float R_ACC_Z = _params.accel_noise;
 
 	// use raw accelerometer measurement (body frame) at EKF time horizon
 	const Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt - getAccelBias();
