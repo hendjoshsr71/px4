@@ -894,25 +894,6 @@ void Ekf::predictCovariance()
 		P(i, i) = nextP(i, i);
 	}
 
-	// P.uncorrelateCovarianceSetVariance<1>(4, 0.0f);		// disable vx
-	// P.uncorrelateCovarianceSetVariance<1>(5, 0.0f);		// disable vy
-	// P.uncorrelateCovarianceSetVariance<1>(7, 0.0f);		// disable px
-	// P.uncorrelateCovarianceSetVariance<1>(8, 0.0f);		// disable py
-	// P.uncorrelateCovarianceSetVariance<1>(10, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(11, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(12, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(13, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(14, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(15, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(16, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(17, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(18, 0.0f);	// disable Earth Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(19, 0.0f);	// disable Body Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(20, 0.0f);	// disable Body Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(21, 0.0f);	// disable Body Magnetic Field
-	// P.uncorrelateCovarianceSetVariance<1>(22, 0.0f);	// disable Wind
-	// P.uncorrelateCovarianceSetVariance<1>(23, 0.0f);	// disable Wind
-	
 	// fix gross errors in the covariance matrix and ensure rows and
 	// columns for un-used states are zero
 	fixCovarianceErrors(false);
