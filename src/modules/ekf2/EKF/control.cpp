@@ -1054,9 +1054,11 @@ void Ekf::controlBetaFusion()
 
 void Ekf::controlGravityFusion()
 {
-	// note - various heuristics to restrict observations based on acceleration were tried and
-	//  found wanting
-	fuseGravity();
+	// fuse gravity observation if our overall acceleration isn't too big
+	const float gravity_scale = _accel_vec_filt.norm() / CONSTANTS_ONE_G;
+	if (gravity_scale >= 0.9f && gravity_scale <= 1.1f) {
+		fuseGravity();
+	}
 }
 
 void Ekf::controlDragFusion()
