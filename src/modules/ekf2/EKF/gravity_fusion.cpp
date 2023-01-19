@@ -57,10 +57,11 @@ void Ekf::fuseGravity()
 	const float &q3 = _state.quat_nominal(3);
 
 	// zero-mean gaussian observation noise for acceleration
-	const float R_ACC_Z = _params.gravity_noise;
+	const float R_ACC_Z = sq(_params.gravity_noise);
 
-	// use raw accelerometer measurement (body frame) at EKF time horizon
-	const Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt - getAccelBias();
+	// use normalized accelerometer measurement (body frame) at EKF time horizon
+	Vector3f measurement = _imu_sample_delayed.delta_vel / _imu_sample_delayed.delta_vel_dt - getAccelBias();
+	measurement = g * measurement / measurement.norm();
 
 	// calculate innovation -> the difference between measured and estimated angles
 	const Vector3f estimate = _R_to_earth.transpose() * Vector3f(0,0,-g);
