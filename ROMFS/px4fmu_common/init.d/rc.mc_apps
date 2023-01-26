@@ -43,6 +43,7 @@ else
 		ekf2 start &
 	fi
 fi
+attitude_estimator_q start
 
 ###############################################################################
 #                        End Estimator Group Selection                        #

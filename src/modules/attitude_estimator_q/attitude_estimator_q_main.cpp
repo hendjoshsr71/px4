@@ -115,7 +115,8 @@ private:
 	uORB::Subscription		_mocap_odom_sub{ORB_ID(vehicle_mocap_odometry)};
 	uORB::Subscription		_magnetometer_sub{ORB_ID(vehicle_magnetometer)};
 
-	uORB::Publication<vehicle_attitude_s>	_att_pub{ORB_ID(vehicle_attitude)};
+	// uORB::Publication<vehicle_attitude_s>	_att_pub{ORB_ID(vehicle_attitude)};
+	uORB::Publication<vehicle_attitude_s>	_att_pub{ORB_ID(vehicle_attitude_backup)};
 
 	float		_mag_decl{0.0f};
 	float		_bias_max{0.0f};
