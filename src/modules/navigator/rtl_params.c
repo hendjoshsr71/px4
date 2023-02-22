@@ -203,3 +203,15 @@ PARAM_DEFINE_FLOAT(RTL_TIME_FACTOR, 1.1f);
  * @group Return To Land
  */
 PARAM_DEFINE_INT32(RTL_TIME_MARGIN, 100);
+
+/**
+ * Use RTL Time Estimate
+ *
+ * If set, the RTL Time Estimate is set to be invalid.
+ * FIXME: RTL_TIM_EST_USE should be invalid if we dont know our current local position
+ * still trying to find/test the right flag for that in the estimator flags,
+ *
+ * @boolean
+ * @group Return To Land
+ */
+PARAM_DEFINE_INT32(RTL_TIM_EST_USE, 1);
