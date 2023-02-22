@@ -68,12 +68,19 @@ msp_name_t construct_display_message(const struct vehicle_status_s &vehicle_stat
 		display.set(MessageDisplayType::FLIGHT_MODE, "???");
 
 	} else {
-		// display armed / disarmed
+		// display armed / disarmed / kill_switch
+
 		if (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED) {
 			display.set(MessageDisplayType::ARMING, "ARM");
 
 		} else {
-			display.set(MessageDisplayType::ARMING, "DSRM");
+			if (vehicle_status.latest_disarming_reason == vehicle_status_s::ARM_DISARM_REASON_KILL_SWITCH ||
+			    vehicle_status.latest_disarming_reason == vehicle_status_s::ARM_DISARM_REASON_RC_SWITCH)
+			{
+				display.set(MessageDisplayType::ARMING, "KILL_SW");
+			} else {
+				display.set(MessageDisplayType::ARMING, "DSRM");
+			}
 		}
 
 		// display flight mode
