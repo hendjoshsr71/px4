@@ -726,9 +726,12 @@ void RTL::calc_and_pub_rtl_time_estimate()
 
 	// We can have a valid home position but not be using position control??
 	// Or just as importantly later on not have a valid current_position
-	// UOrbs: vehicle_status_flags, local_position 
+	// UOrbs: vehicle_status_flags, local_position
 
-	if (!_navigator->home_global_position_valid() || !_param_rtl_tim_est_use.get()) {
+	const vehicle_local_position_s &local_pos = *_navigator->get_local_position();
+
+	if (!_navigator->home_global_position_valid() || !_param_rtl_tim_est_use.get() ||
+	    	!local_pos.xy_valid || !local_pos.z_valid) {
 		rtl_time_estimate.valid = false;
 
 	} else {
