@@ -39,3 +39,17 @@
  * @reboot_required true
   */
 PARAM_DEFINE_INT32(SENS_EN_ADIS165X, 0);
+
+/**
+ * Analog Devices ADIS16507 IMU Orientation(external SPI)
+ *
+ * @reboot_required true
+ * @min 0
+ * @max 101
+ * @group Sensors
+ * @value 0 ROTATION_NONE
+ * @value 4 ROTATION_YAW_180
+ * @value 8 ROTATION_ROLL_180
+ * @value 12 ROTATION_PITCH_180
+  */
+PARAM_DEFINE_INT32(SENS_OR_ADIS165X, 0);
