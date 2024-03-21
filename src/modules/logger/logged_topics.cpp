@@ -360,6 +360,9 @@ void LoggedTopics::add_estimator_replay_topics()
 	add_topic("aux_global_position");
 	add_topic_multi("distance_sensor");
 	add_topic_multi("vehicle_imu");
+
+	// We log a lot really fast with replay, logger_status is a nice to have
+	add_topic("logger_status", 40); 	// 25 Hz
 }
 
 void LoggedTopics::add_thermal_calibration_topics()
