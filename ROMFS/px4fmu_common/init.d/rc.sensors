@@ -135,7 +135,19 @@ fi
 # ADIS16507 spi external IMU
 if param greater -s SENS_EN_ADIS165X 0
 then
-	adis16507 -S start
+	if param compare -s SENS_OR_ADIS165X 0
+	then
+		adis16507 -S start
+	elif param compare -s SENS_OR_ADIS165X 4
+	then
+		adis16507 -S start -R 4
+	elif param compare -s SENS_OR_ADIS165X 8
+	then
+		adis16507 -S start -R 8
+	elif param compare -s SENS_OR_ADIS165X 12
+	then
+		adis16507 -S start -R 12
+	fi
 fi
 
 # Eagle Tree airspeed sensor external I2C
