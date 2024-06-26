@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Stop the voxl-px4 service (not process) before trying to overwrite the binary
+# We must stop the service because it will autorestart voxl-px4 if we attempt to stop/kill the process alone
+adb shell service voxl-px4 stop
+
+# FOR SDK after 1.3 there will be a "px4-shutdown" command
+# This also sends a command to the DSP to properly shutdown and be able to restart again later
+adb shell px4-shutdown
+
+# Extra options below in case things stop working ...
+# Likely need none of them and wont need the sleep
+
+# adb shell systemctl stop voxl-px4
+# adb shell am force-stop voxl-px4
+# adb shell systemctl kill -s 9 --KillMode=control-group voxl-px4
+# adb shell systemctl kill -s 9 voxl-px4
+# adb shell systemctl kill voxl-px4
+# adb shell ps | grep com.your.app_package | awk '{print $2}' | xargs adb shell kill
+# adb shell systemctl kill -s 9 voxl-px4
+sleep 0.5
+
+
 # Push slpi image to voxl2
 adb push build/modalai_voxl2-slpi_default/platforms/qurt/libpx4.so /usr/lib/rfsa/adsp
 
@@ -138,5 +159,14 @@ adb push build/modalai_voxl2_default/actuators.json.xz /data/px4/etc/extras
 adb push build/modalai_voxl2_default/component_general.json.xz /data/px4/etc/extras
 adb push build/modalai_voxl2_default/parameters.json.xz /data/px4/etc/extras
 adb push build/modalai_voxl2_default/events/all_events.json.xz /data/px4/etc/extras
+
+
+# Push voxl-px4 last so we have time for the process to stop
+# adb push boards/modalai/voxl2/target/voxl-px4 /usr/bin
+
+# Restart voxl-px4 service
+adb shell service voxl-px4 start
+# adb shell systemctl enable voxl-px4
+# adb shell systemctl start voxl-px4
 
 adb shell sync
