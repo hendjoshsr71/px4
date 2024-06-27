@@ -6,7 +6,7 @@ adb shell service voxl-px4 stop
 
 # FOR SDK after 1.3 there will be a "px4-shutdown" command
 # This also sends a command to the DSP to properly shutdown and be able to restart again later
-adb shell px4-shutdown
+# adb shell px4-shutdown
 
 # Extra options below in case things stop working ...
 # Likely need none of them and wont need the sleep
